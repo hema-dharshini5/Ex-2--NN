@@ -1,5 +1,5 @@
-<H3>Name</H3>
-<H3>Register no.</H3>
+<H3>Name:Hema Dharshini N</H3>
+<H3>Register no.212223220034</H3>
 <H3>Date</H3>
 <H3>Experiment No. 2 </H3>
 ## Implementation of Perceptron for Binary Classification
@@ -49,11 +49,98 @@ STEP 9:For ‘N ‘ iterations ,do the following:<BR>
 STEP 10:Plot the error for each iteration <BR>
 STEP 11:Print the accuracy<BR>
 # PROGRAM:
-    ''' Insert your code here '''
+## Import Libraries
+```
+import pandas as pd
+import io
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 
+```
+## Read the dataset
+```
+df=pd.read_csv("Churn_Modelling.csv")
+df
+```
+## Checking Data
+```
+df.head()
+df.tail()
+df.columns
+```
+## Check the missing data
+```
+df.isnull().sum()
+```
+## Check for Duplicates
+```
+df.duplicated()
+```
+
+## Assigning Y
+```
+y = df.iloc[:, -1].values
+print(y)
+```
+## Check for Duplicates
+```
+df.duplicated()
+```
+## Check for outliers
+```
+df.describe()
+```
+## Dropping string values data from dataset
+```
+data = df.drop(['Surname', 'Geography','Gender'], axis=1)
+```
+## Checking datasets after dropping string values data from dataset
+```
+data.head()
+```
+## Normalize the dataset
+```
+scaler=MinMaxScaler()
+df1=pd.DataFrame(scaler.fit_transform(data))
+print(df1)
+```
+## Split the dataset
+```
+X=df.iloc[:,:-1].values
+y=df.iloc[:,-1].values
+print(X)
+print(y)
+```
+## Training and testing model
+```
+X_train ,X_test ,y_train,y_test=train_test_split(X,y,test_size=0.2)
+print("X_train\n")
+print(X_train)
+print("\nLenght of X_train ",len(X_train))
+print("\nX_test\n")
+print(X_test)
+print("\nLenght of X_test ",len(X_test))
+```
 # OUTPUT:
-
-    ''' Show your result '''
+## Data
+![image](https://github.com/user-attachments/assets/d861bfce-17ba-4f27-b49f-be9aa85c1b7a)
+## Data Checking
+![image](https://github.com/user-attachments/assets/eee31055-b964-4d20-a01c-2bc633ff2577)
+## Missing Data
+![image](https://github.com/user-attachments/assets/b46f890b-02d7-460c-ac48-8ce3978eced7)
+## Values of 'Y'
+![image](https://github.com/user-attachments/assets/78bbba4c-f5a1-4f2b-ba29-b4b24310f38d)
+## Outliers
+![image](https://github.com/user-attachments/assets/c5e0cd48-bcd6-42a3-bdb5-b5d5823ce3cf)
+## Checking datasets after dropping string values data from dataset
+![image](https://github.com/user-attachments/assets/0b1feaee-e870-4e88-9fba-ce80ae09a34e)
+## Normalize the dataset
+![image](https://github.com/user-attachments/assets/27aa93d5-a920-4e24-a850-ddd5e22ea0aa)
+## Split the dataset
+![image](https://github.com/user-attachments/assets/8195b084-5d20-4ca8-b6d5-af337776a919)
+## Training and testing model
+![image](https://github.com/user-attachments/assets/6f8fd84e-7dea-4833-bc00-617881fa9776)
 
 # RESULT:
  Thus, a single layer perceptron model is implemented using python to classify Iris data set.
