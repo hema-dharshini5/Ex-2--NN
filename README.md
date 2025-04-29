@@ -49,100 +49,94 @@ STEP 9:For ‘N ‘ iterations ,do the following:<BR>
 STEP 10:Plot the error for each iteration <BR>
 STEP 11:Print the accuracy<BR>
 # PROGRAM:
-## Import Libraries
 ```
-import pandas as pd
-import io
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
+import numpy as np                                                     
+import pandas as pd                                                     
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+class Perceptron:
+  def __init__(self,learning_rate=0.1):
+    self.learning_rate = learning_rate
+    self._b = 0.0
+    self._w = None
+    self.misclassified_samples = []
+  def fit(self, x: np.array, y: np.array, n_iter=10):
+    self._b = 0.0
+    self._w = np.zeros(x.shape[1])
+    self.misclassified_samples = []
+    for _ in range(n_iter):
+      errors = 0
+      for xi, yi in zip(x, y):
+        update = self.learning_rate * (yi - self.predict(xi))
+        self._b += update
+        self._w += update * xi
+        errors += int(update != 0.0)
+      self.misclassified_samples.append(errors)
+  def f(self, x: np.array) -> float:
+      return np.dot(x, self._w) + self._b
+  def predict(self, x: np.array):
+      return np.where(self.f(x) >= 0, 1, -1)
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+df = pd.read_csv(url, header=None)
+print(df.head())
+y = df.iloc[:, 4].values
+x = df.iloc[:, 0:3].values
+fig = plt.figure()
+ax = plt.axes(projection='3d')
+ax.set_title('Iris data set')
+ax.set_xlabel("Sepal length in width (cm)")
+ax.set_ylabel("Sepal width in width (cm)")
+ax.set_zlabel("Petal length in width (cm)")
+ax.scatter(x[:50,0], x[:50,1], x[:50,2], color='red',marker='o', s=4, label="Iris Setosa")
+ax.scatter(x[50:100,0], x[50:100,1], x[50:100,2], color='blue',marker='^', s=4, label="Iris Versicolour")
+ax.scatter(x[100:150,0], x[100:150,1], x[100:150,2], color='green',marker='x', s=4, label="Iris Virginica")
+plt.legend(loc='upper left')
+plt.show()
+x = x[0:100, 0:2] 
+y = y[0:100]
+plt.figure(figsize=(4,4))
+plt.scatter(x[:50, 0], x[:50, 1], color='red', marker='o', label='Setosa')
+plt.scatter(x[50:100, 0], x[50:100, 1], color='blue', marker='x',label='Versicolour')
+plt.xlabel("Sepal length")
+plt.ylabel("Petal length")
+plt.legend(loc='upper left')
+plt.show()
+y = np.where(y == 'Iris-setosa', 1, -1)
+x[:, 0] = (x[:, 0] - x[:, 0].mean()) / x[:, 0].std()
+x[:, 1] = (x[:, 1] - x[:, 1].mean()) / x[:, 1].std()
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25,random_state=0)
+classifier = Perceptron(learning_rate=0.01)
+classifier.fit(x_train, y_train)
+print("accuracy", accuracy_score(classifier.predict(x_test), y_test)*100)
+plt.figure(figsize=(4,4))
+plt.plot(range(1, len(classifier.misclassified_samples) + 1),classifier.misclassified_samples, marker='o')
+plt.xlabel('Epoch')
+plt.ylabel('Errors')
+plt.show()
 
-```
-## Read the dataset
-```
-df=pd.read_csv("Churn_Modelling.csv")
-df
-```
-## Checking Data
-```
-df.head()
-df.tail()
-df.columns
-```
-## Check the missing data
-```
-df.isnull().sum()
-```
-## Check for Duplicates
-```
-df.duplicated()
-```
 
-## Assigning Y
-```
-y = df.iloc[:, -1].values
-print(y)
-```
-## Check for Duplicates
-```
-df.duplicated()
-```
-## Check for outliers
-```
-df.describe()
-```
-## Dropping string values data from dataset
-```
-data = df.drop(['Surname', 'Geography','Gender'], axis=1)
-```
-## Checking datasets after dropping string values data from dataset
-```
-data.head()
-```
-## Normalize the dataset
-```
-scaler=MinMaxScaler()
-df1=pd.DataFrame(scaler.fit_transform(data))
-print(df1)
-```
-## Split the dataset
-```
-X=df.iloc[:,:-1].values
-y=df.iloc[:,-1].values
-print(X)
-print(y)
-```
-## Training and testing model
-```
-X_train ,X_test ,y_train,y_test=train_test_split(X,y,test_size=0.2)
-print("X_train\n")
-print(X_train)
-print("\nLenght of X_train ",len(X_train))
-print("\nX_test\n")
-print(X_test)
-print("\nLenght of X_test ",len(X_test))
+
 ```
 # OUTPUT:
-## Data
-![image](https://github.com/user-attachments/assets/d861bfce-17ba-4f27-b49f-be9aa85c1b7a)
-## Data Checking
-![image](https://github.com/user-attachments/assets/eee31055-b964-4d20-a01c-2bc633ff2577)
-## Missing Data
-![image](https://github.com/user-attachments/assets/b46f890b-02d7-460c-ac48-8ce3978eced7)
-## Values of 'Y'
-![image](https://github.com/user-attachments/assets/78bbba4c-f5a1-4f2b-ba29-b4b24310f38d)
-## Outliers
-![image](https://github.com/user-attachments/assets/c5e0cd48-bcd6-42a3-bdb5-b5d5823ce3cf)
-## Checking datasets after dropping string values data from dataset
-![image](https://github.com/user-attachments/assets/0b1feaee-e870-4e88-9fba-ce80ae09a34e)
-## Normalize the dataset
-![image](https://github.com/user-attachments/assets/27aa93d5-a920-4e24-a850-ddd5e22ea0aa)
-## Split the dataset
-![image](https://github.com/user-attachments/assets/8195b084-5d20-4ca8-b6d5-af337776a919)
-## Training and testing model
-![image](https://github.com/user-attachments/assets/6f8fd84e-7dea-4833-bc00-617881fa9776)
+
+   ![image](https://github.com/user-attachments/assets/0c9d2229-d852-4351-9ad4-61b7877ac291)
+
+![image](https://github.com/user-attachments/assets/69abd22f-c89c-4d8f-a35c-2ef05f3c9f53)
+
+![image](https://github.com/user-attachments/assets/da388f11-1580-4ae8-8433-779d4d5b183c)
+
+
+![image](https://github.com/user-attachments/assets/d77f2c01-a9b0-4c44-bd0a-55ef1d7a4cfe)
+
+
+
 
 # RESULT:
  Thus, a single layer perceptron model is implemented using python to classify Iris data set.
+
+ 
+
 
  
